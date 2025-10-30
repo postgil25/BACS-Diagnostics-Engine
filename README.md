@@ -130,7 +130,7 @@
                 </div>
                 
                 <!-- VII. Budget Justification Strategy (Block - FREE) -->
-                 <div class="diagnosis-card">
+                   <div class="diagnosis-card">
                     <div class="header-title">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"></rect><line x1="12" y1="12" x2="12" y2="12"></line></svg>
                         VII. Budget Justification Strategy
@@ -226,9 +226,8 @@
         let lastScore = null;
         
         // --- API ENDPOINT CONFIGURATION ---
-        // !!! IMPORTANT: REPLACE THIS URL WITH YOUR LIVE VERCELL FUNCTION URL !!!
-        // Example: https://bacs-engine-xxxx.vercel.app/api/diagnose
-        const API_ENDPOINT = 'https://[YOUR-VERCEL-DOMAIN]/api/diagnose'; 
+        // !!! IMPORTANT: THIS IS THE FINAL, LIVE VERCELL FUNCTION URL !!!
+        const API_ENDPOINT = 'https://bacs-diagnostics-engine.vercel.app/api/diagnose'; 
 
         /**
          * Function to update the DOM with results returned from the API.
@@ -333,8 +332,12 @@
             
             // Input validation before API call
             if (D === 0) {
-                console.error('Error: D (Direction) must be greater than 0 for analysis.');
-                alert('Error: D (Direction) must be greater than 0 for analysis.');
+                // Using a custom visual message instead of alert()
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'p-3 critical-alert rounded-lg mt-2 text-sm';
+                errorDiv.textContent = 'Error: D (Direction) must be greater than 0 for analysis.';
+                form.insertBefore(errorDiv, diagnoseBtn);
+                setTimeout(() => errorDiv.remove(), 5000);
                 return;
             }
 
@@ -366,8 +369,8 @@
                 // Display error message
                 console.error("Diagnostic Engine Failure:", error);
                 const errorDiv = document.createElement('div');
-                errorDiv.className = 'p-4 bg-red-100 text-red-800 rounded-lg font-bold mt-4 text-center shadow-md';
-                errorDiv.textContent = `ERROR: Diagnostic failed. Check console for details. (Endpoint: ${API_ENDPOINT})`;
+                errorDiv.className = 'p-4 critical-alert rounded-lg font-bold mt-4 text-center shadow-md';
+                errorDiv.textContent = `CRITICAL ERROR: Diagnostic failed. Please check the console for API details. (Endpoint: ${API_ENDPOINT})`;
                 fullDiagnosis.parentNode.insertBefore(errorDiv, fullDiagnosis);
                 resultSection.classList.remove('hidden');
             } finally {
